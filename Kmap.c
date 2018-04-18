@@ -7,6 +7,7 @@ void Getminterm(char* input,int len,int minterm[],int dontcare[]);
 
 
 
+
 int main(){
 	 
 	/////* File processing */////
@@ -71,13 +72,36 @@ int main(){
 	/////* end find minterm */////
 
 	/////* begin initialize Kmap */////
-	Kmap[4][4];
-	Circle[4][4];
+	int Kmap[4][4];
+	int Circle[4][4];
+	int ii,jj;
 	for(i=0;i<4;i++){
-		for
+		for(j=0;j<4;j++){
+			ii = i;
+			jj = j;
+			if(j==2) jj = j+1;
+			if(j==3) jj = j-1;
+			if(i==2) ii = i+1;
+			if(i==3) ii = i-1;
+			Kmap[i][j] = ii + 4*jj;
+		}
+	} //initialize (decimal)
 
+	for(i=0;i<4;i++){
+		for(j=0;j<4;j++){
+			if(minterm[Kmap[i][j]]==-1 && dontcare[Kmap[i][j]]==-1) Kmap[i][j] = 0;
+			else if(minterm[Kmap[i][j]]!=-1) Kmap[i][j] = 1;
+			else Kmap[i][j] = -1;
+		}
+	} //initialize (binary)
 
-
+	for(i=0;i<4;i++){
+		for(j=0;j<4;j++){
+			if(Kmap[i][j]==-1) printf("X ");
+			else printf("%d ",Kmap[i][j]);
+		}
+		printf("\n");
+	}
 
 
 
