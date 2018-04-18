@@ -1,10 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-void Getminterm(char* input,int len,int minterm[],int doncare[]);
+void Getminterm(char* input,int len,int minterm[],int dontcare[]);
+
+/* Minterm : Line33 , Initialize Kmap : Line 71*/ 
+
+
 
 int main(){
-	
+	 
+	/////* File processing */////
 	FILE* inFile,*outFile;
 	inFile = fopen("input.txt","r");
 	if(!inFile){
@@ -14,41 +19,78 @@ int main(){
 	if(!outFile){
 	printf("Failed to open\n");
 	}
+	/////* File processing */////
 
-	int i;
-	static int Group[16];
-	//init(Group);
-	char min[50];
-	int minterm[16],doncare[16];   //store minterm (decimal)
+	int i,j;   //for loop times
+	char min[50];  //store input string
+	int minterm[16],dontcare[16];   //store minterm (decimal)
+	int count=0; //the number of minterm
 	for(i=0;i<16;i++){ 
 		minterm[i] = -1;
-		doncare[i] = -1;
-	}
+		dontcare[i] = -1;
+	} //initialize array
+
+	/////* begin find minterm *///// 
 	char t[5] = "+";  //cut string with '+'
 
 	while((fscanf(inFile,"%s",min))==1){
 		printf("input : %s\n",min);
 	}  //read input file 
 
-	//cut string with '+'
+	//use strtok to cut string 
 	char *text = strtok(min,t);
 	while(text!=NULL){
 	printf("%s\n",text); 
 	
-	Getminterm(text,strlen(text),minterm,doncare);
+	Getminterm(text,strlen(text),minterm,dontcare); //call Getminterm function
 	
 	text = strtok(NULL,t);
 	}	
+
+		printf("minterm : m(");
+	for(j=0;j<16;j++){
+		if(count!=0 && minterm[j]==j) printf(",");
+		if(minterm[j]==j){
+			printf("%d",minterm[j]); 
+			count++;
+		}
+	}
+	printf(")");
+	printf(" + ");
+
+	printf("d(");
+	count=0;
+	for(j=0;j<16;j++){
+		if(count!=0 && dontcare[j]==j) printf(",");
+		if(dontcare[j]==j){
+			printf("%d",dontcare[j]); 
+			count++;
+		}
+	}
+	printf(")\n");
+	/////* end find minterm */////
+
+	/////* begin initialize Kmap */////
+	Kmap[4][4];
+	Circle[4][4];
+	for(i=0;i<4;i++){
+		for
+
+
+
+
+
+
+	/////* end initialize Kmap */////
 
 	return 0;
 }
 
 //Getminterm funtction
-void Getminterm(char* input,int len,int minterm[],int doncare[]){
+void Getminterm(char* input,int len,int minterm[],int dontcare[]){
 	int i[4] = {0}; //for loop times
 	int a[4] = {-1,-1,-1,-1};   //store abcd bit ,default 'X' = -1
 	int j,k;  //for loop times
-	int count=0; //the number of minterm
 	int ca=0,cb=0,cc=0,cd=0;
 	char c[16][5];   //store minterms (binary)
 	int total = 0;     //minterm[total] = total
@@ -133,31 +175,10 @@ void Getminterm(char* input,int len,int minterm[],int doncare[]){
 		for(k=0;k<4;k++){
 			total +=((c[j][k]-48) << 3-k);
 		}
-		if(input[0]!=40) minterm[total] = total; //doncare or not
-		else doncare[total] = total;
+		if(input[0]!=40) minterm[total] = total; //dontcare or not  ASCII code 40 = '('
+		else dontcare[total] = total;
 	}
 	
-	printf("minterm : m(");
-	for(j=0;j<16;j++){
-		if(count!=0 && minterm[j]==j) printf(",");
-		if(minterm[j]==j){
-			printf("%d",minterm[j]); 
-			count++;
-		}
-	}
-	printf(")");
-	printf(" + ");
-
-	printf("d(");
-	count=0;
-	for(j=0;j<16;j++){
-		if(count!=0 && doncare[j]==j) printf(",");
-		if(doncare[j]==j){
-			printf("%d",doncare[j]); 
-			count++;
-		}
-	}
-	printf(")\n");
 	return;
 }
 
