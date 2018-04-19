@@ -72,9 +72,9 @@ int main(){
 	/////* end find minterm */////
 
 	/////* begin initialize Kmap */////
-	int Kmap[4][4];
-	int Circle[4][4];
-	int ii,jj;
+	int Kmap[4][4]; //store in decimal 
+	int kmap[4][4];	//store in binary
+	int ii,jj;  //for loop count 3 to 4 and 4 to 3
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
 			ii = i;
@@ -89,23 +89,33 @@ int main(){
 
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
-			if(minterm[Kmap[i][j]]==-1 && dontcare[Kmap[i][j]]==-1) Kmap[i][j] = 0;
-			else if(minterm[Kmap[i][j]]!=-1) Kmap[i][j] = 1;
-			else Kmap[i][j] = -1;
+			if(minterm[Kmap[i][j]]==-1 && dontcare[Kmap[i][j]]==-1) kmap[i][j] = 0;
+			else if(minterm[Kmap[i][j]]!=-1) kmap[i][j] = 1;
+			else kmap[i][j] = -1;
 		}
 	} //initialize (binary)
 
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
-			if(Kmap[i][j]==-1) printf("X ");
-			else printf("%d ",Kmap[i][j]);
+			if(kmap[i][j]==-1) printf("X ");
+			else printf("%d ",kmap[i][j]);
 		}
 		printf("\n");
-	}
-
-
+	}  //print K map
 
 	/////* end initialize Kmap */////
+
+	/////* begin Group and simplificaKmap */////
+	if(group16()){break;}
+	else if(group8()){break;}
+	else if(group4()){break;}
+	else {group2();}
+	
+
+
+
+	/////* end Group Kmap *////
+
 
 	return 0;
 }
