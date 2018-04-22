@@ -127,8 +127,9 @@ int main(){
 	/////* begin Circle and Simplify */////
 	if(Circle16()){	//Circle for size 16
 		printf("Group :m(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)\nSimplification -> 1\nF(A,B,C,D)= 1");	
-	}
 	return 0;
+	}
+	
 
 	Circle8();  //Circle for size 8
 	///*use strtok to cut string*///
@@ -682,6 +683,7 @@ void Circle4(){
 				for(k=ii;count2<2;count2++){
 					for(n=j;count<2;count++){
 						Circle[k][n]++;
+
 
 						//get binary of Group and store in char//
 							for(m=0;m<4;m++){
