@@ -1,14 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-void Getminterm(char* input,int len,int minterm[],int dontcare[]);  //201L
-int  GetGroupTerm(char* input,int len,int term[]); //950L
-int Circle16(); //300L
-void Circle8(); //320L
-void Circle4(); //440L
-void Circle2(); //740L
-void Circle1(); //910L
-//find minterm 47~86L   //Initialize Kmap 88~124L   //Circle and Simplify 125~190L
+void Getminterm(char* input,int len,int minterm[],int dontcare[]);  //170L
+int  GetGroupTerm(char* input,int len,int term[]); //910L
+int Circle16(); //270L
+void Circle8(); //290L
+void Circle4(); //410L
+void Circle2(); //700L
+void Circle1(); //880L
+//find minterm 46~87L   //Initialize Kmap 89~125L   //Circle and Simplify 127~158L
 
 char s8[50],s4[50],s2[50],s1[50];  //store abcd in size n circle  ex: d+b+c  
 char PI[100];   //F(A,B,C,D) Answer 
@@ -34,7 +34,7 @@ int main(){
 	/////* File processing */////
 
 	int i,j;   //for loop times
-	char min[50];  //store input string
+	char min[150];  //store input string
 	int minterm[16],dontcare[16],term[16];   //store minterm (decimal) //term[16] for last group 
 	int count=0; //the number of minterm
 	for(i=0;i<16;i++){ 
@@ -128,13 +128,23 @@ int main(){
 	if(Circle16()){	//Circle for size 16
 		printf("Group :m(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)\nSimplification -> 1\nF(A,B,C,D)= 1");	
 	return 0;
-	}
-	
+	}	
+
 
 	Circle8();  //Circle for size 8
-	///*use strtok to cut string*///
+
+	Circle4();  //Circle for size 4
+	strcat(s8,s4);
+
+	Circle2();	//Circle for size 2
+	strcat(s8,s2);
+
+	Circle1();  //Circle for size 1
+	strcat(s8,s1);
+	printf("s8:%s\n,s4:%s\n,s2:%s\n",s8,s4,s2);
+
 	char *buf = strtok(s8,t);
-	while(buf!=NULL){ 	
+  while(buf!=NULL){ 	
 		if(GetGroupTerm(buf,strlen(buf),term)){	//call Getminterm function
 			printf("Simplification -> %s\n",buf);
 			strcat(PI,buf);
@@ -143,55 +153,17 @@ int main(){
 		buf = strtok(NULL,t);
 	}	
 	///*use strtok to cut string
- 	
-
-
-	Circle4();  //Circle for size 4
-
-	///*use strtok to cut string*///
-	buf = strtok(s4,t);
-	while(buf!=NULL){ 
-		if(GetGroupTerm(buf,strlen(buf),term)){	//call Getminterm function
-			printf("Simplificatoin -> %s\n",buf);
-			strcat(PI,buf);
-			strcat(PI,"+");
-		}
-		buf = strtok(NULL,t);
-	}	
-	///*use strtok to cut string
-
-
-
-	Circle2();	//Circle for size 2
-	///*use strtok to cut string*///
-	buf = strtok(s2,t);
-	while(buf!=NULL){ 
-		if(GetGroupTerm(buf,strlen(buf),term)){	//call Getminterm function
-			printf("Simplificatoin -> %s\n",buf);
-			strcat(PI,buf);
-			strcat(PI,"+");
-		}
-		buf = strtok(NULL,t);
-	}
-	///*use strtok to cut string
-
-
-	Circle1();  //Circle for size 1
-	///*use strtok to cut string*///
-	buf = strtok(s1,t);
-	while(buf!=NULL){ 
-		if(GetGroupTerm(buf,strlen(buf),term)){	//call Getminterm function
-			printf("Simplificatoin -> %s\n",buf);
-			strcat(PI,buf);
-			strcat(PI,"+");
-		}
-		buf = strtok(NULL,t);
-	}
-	///*use strtok to cut string
 	if(PI[strlen(PI)-1]==43) PI[strlen(PI)-1]=32;
 	printf("F(A,B,C,D):%s\n",PI);
 
 	/////* end Circle and Simplify *////
+	
+	for(i=0;i<4;i++){
+		for(j=0;j<4;j++){
+			printf("%d ",Circle[i][j]);
+		}
+		printf("\n");
+	}
 
 	return 0;
 }
@@ -300,7 +272,6 @@ void Getminterm(char* input,int len,int minterm[],int dontcare[]){
 /* Circle16 begin */
 int Circle16(){
 	int i,j;
-	char* s="";
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
 			if(kmap[i][j]==0) return 0;
@@ -320,8 +291,7 @@ int Circle16(){
 
 void Circle8(){
 	int i,j,k,m,n=0;
-	char binary[16][4]; //store the number in size 8 circle with binary term
-	char* s ="";   // if cannot get  any size 8  circle return s
+	char binary[8][4]; //store the number in size 8 circle with binary term
 	int num=0;	
 	int count=0;
 	int flag=0;  //for loop break
@@ -439,7 +409,7 @@ void Circle4(){
 	int i,j,k,m=0,n=0,nn=0,count=0,count2=0; //for loop times 
 	int ii=0,jj=0; //for circle upper left in any [i][j]
 	int num=0;
-	char binary[8][5];
+	char binary[4][5];
 	int flag=-1;  //double for loop break flag
 	int b=0;
 	
@@ -572,7 +542,7 @@ void Circle4(){
 					num=0;
 				}
 				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
-
+				nn=0;
 				/* Simplify */
 				flag = -1;
 			}
@@ -617,10 +587,10 @@ void Circle4(){
 				num=0;
 				}
 				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
-
+				nn=0;
 				// Simplify //
 				count2=0;
-				flag = -1;					
+				flag = -1;
 			}
 			flag=-1;
 
@@ -665,7 +635,7 @@ void Circle4(){
 				num=0;
 				}
 				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
-
+				nn=0;
 				// Simplify //
 				count2=0;
 				flag = -1;					
@@ -713,7 +683,7 @@ void Circle4(){
 				num=0;
 				}
 				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
-
+				nn=0;
 				// Simplify //
 				count2=0;
 				flag = -1;				
@@ -731,7 +701,7 @@ void Circle2(){
 	int i,j,k,m,count=0;
 	int flag=-1;
 	int ii,jj,nn=0,num=0;
-	char binary[5][4];
+	char binary[3][5];
 
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){	  
@@ -769,6 +739,7 @@ void Circle2(){
 				num=0;
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
+				nn=0;
 				// Simplify //
 				flag = -1;					
 			} 
@@ -793,7 +764,6 @@ void Circle2(){
 					nn++;
 				}
 				count=0;
-				nn=0;
 				//Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<2;nn++){
@@ -808,9 +778,9 @@ void Circle2(){
 				num=0;
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
+				nn=0;
 				// Simplify //
-				flag = -1;
-				continue;					
+				flag = -1;					
 			} 
 			flag=-1;
 			
@@ -848,6 +818,7 @@ void Circle2(){
 				num=0;
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
+				nn=0;
 				// Simplify //
 				flag = -1;
 				continue;					
@@ -888,6 +859,7 @@ void Circle2(){
 				num=0;
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
+				nn=0;
 				// Simplify //
 				flag = -1;
 				continue;					
@@ -1030,10 +1002,10 @@ int GetGroupTerm(char* input,int len,int term[]){
 		}
 		for(m=0;m<4;m++){
 			for(n=0;n<4;n++){
-				if(total==Kmap[m][n]&&Circle[m][n]==1){
-						Bool=1;
-					
-				}	
+				if(total==Kmap[m][n]&&Circle[m][n]==1&&kmap[m][n]==1){
+					Circle[m][n]++;	
+					Bool=1;	
+				}
 			}
 		}
 	  term[total] = total; 
