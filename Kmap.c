@@ -3,15 +3,17 @@
 #include<string.h>
 void Getminterm(char* input,int len,int minterm[],int dontcare[]);  //127L
 void GetGroupTerm(char* input,int len,int term[]); //530L
-int GetGroup(char* PI,int kamp[][4],int Circle[][4],int Kmap[][4]); //630L
-int Circle16(int kmap[][4],int Circle[][4],int Kmap[][4]); //250L
-void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]); 
-void Circle4(int kmap[][4],int Circle[][4],int Kmap[][4]);
-void Circle2(int kmap[][4],int Circle[][4],int Kmap[][4]);
-void Circle1(int kmap[][4],int Circle[][4],int Kmap[][4]);
+int GetGroup(char* PI); //630L
+int Circle16(); //250L
+void Circle8(); 
+void Circle4();
+void Circle2();
+void Circle1();
 
 char s8[50],s4[50],s2[50],s1[50];  //store abcd in size n circle  ex: d+b+c  
-
+unsigned int Kmap[4][4]; //store in decimal 
+int kmap[4][4];	//store in binary
+int Circle[4][4]={0}; //Circle[i][j] stores circle times at kmap each position
 /* Minterm : Line40 , Initialize Kmap : Line 81*/ 
 
 
@@ -31,7 +33,7 @@ int main(){
 	}
 	/////* File processing */////
 
-	int i,j,k;   //for loop times
+	int i,j;   //for loop times
 	char min[50];  //store input string
 	int minterm[16],dontcare[16],term[16];   //store minterm (decimal) //term[16] for last group 
 	int count=0; //the number of minterm
@@ -85,8 +87,6 @@ int main(){
 	/////* begin initialize Kmap */////
 	printf("Initialize Kmap:\nCD\\AB 00 01 11 10");
 
-	int Kmap[4][4]; //store in decimal 
-	int kmap[4][4];	//store in binary
 	int ii,jj;  //for loop count 3 to 4 and 4 to 3
 	for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
@@ -123,7 +123,6 @@ int main(){
 	/////* end initialize Kmap */////
 
 	/////* begin Circle  */////
-	int Circle[4][4]={0}; //Circle[i][j] stores circle times at kmap each position
 	if(Circle16(kmap,Circle,Kmap)){	//Circle for size 16
 		printf("Group 1:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\nSimplification:X\nF(A,B,C,D)= X");	
 	}
@@ -161,7 +160,6 @@ void Getminterm(char* input,int len,int minterm[],int dontcare[]){
 	int i[4] = {0}; //for loop times
 	int a[4] = {-1,-1,-1,-1};   //store abcd bit ,default 'X' = -1
 	int j,k;  //for loop times
-	int count=0; //
 	int ca=0,cb=0,cc=0,cd=0;//use for find binary term
 	char c[16][5];   //store minterms (binary)
 	int total = 0;     //minterm[total] = total
@@ -244,7 +242,7 @@ void Getminterm(char* input,int len,int minterm[],int dontcare[]){
 	for(j=0;j<16;j++){
 		total = 0;
 		for(k=0;k<4;k++){
-			total +=((c[j][k]-48) << 3-k);
+			total += ((c[j][k]-48) << (3-k));
 		}
 		if(input[0]!=40) minterm[total] = total; //dontcare or not  ASCII code 40 = '('
 		else dontcare[total] = total;
@@ -254,7 +252,7 @@ void Getminterm(char* input,int len,int minterm[],int dontcare[]){
 }
 
 /* Circle16 begin */
-int Circle16(int kmap[][4],int Circle[][4],int Kmap[][4]){
+int Circle16(){
 	int i,j;
 	char* s="";
 	for(i=0;i<4;i++){
@@ -412,7 +410,7 @@ int Circle16(int kmap[][4],int Circle[][4],int Kmap[][4]){
 }*/
 /* Circle8 end */
 
-void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]){
+void Circle8(){
 	int i,j,k,m,n=0;
 	char binary[16][4]; //store the number in size 8 circle with binary term
 	char* s ="";   // if cannot get  any size 8  circle return s
@@ -441,7 +439,7 @@ void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]){
 
 					/*get binary of Group and store in char*/
 					for(m=0;m<4;m++){
-					binary[n][m]=(((Kmap[i][j] >> 3-m) & 1)+48);	
+					binary[n][m]=(((Kmap[i][j] >> (3-m)) & 1)+48);	
 					}
 					/*get binary of Group and store in char*/
 					n++;
@@ -456,7 +454,7 @@ void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]){
 					if(binary[n][m]-48) num++;
 				}
 				if(num==8){ s8[strlen(s8)] = m+97;
-					strcat(s8,"+");}
+					strcat(s8,"+"); }
 				if(num==0){ s8[strlen(s8)] = m+97; 
 					strcat(s8,"'+"); }
 
@@ -496,7 +494,7 @@ void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]){
 
 					/*get binary of Group and store in char*/
 					for(m=0;m<4;m++){
-					binary[n][m]=(((Kmap[i][j] >> 3-m) & 1)+48);	
+					binary[n][m]=(((Kmap[i][j] >> (3-m)) & 1)+48);	
 					}
 					/*get binary of Group and store in char*/
 					n++;
@@ -524,212 +522,225 @@ void Circle8(int kmap[][4],int Circle[][4],int Kmap[][4]){
 		/* simplify and Circle */
 		else flag=0;
 	}
-
 }
 
-void Circle4(int kmap[][4],int Circle[][4],int Kmap[][4]){
-	int i,j,k,m,n=0,nn=0,count=0,count2=0,count3=0; //for loop times 
-	int ii,jj; //for circle upper left in any [i][j]
+void Circle4(){
+	int i=0,j=0,k=0,m=0,n=0,nn=0,count=0,count2=0; //for loop times 
+	int ii=0,jj=0; //for circle upper left in any [i][j]
 	int num=0;
-	char binary[4][4];
-	int flag=1;  //double for loop break flag
+	char binary[8][5];
+	int flag=-1;  //double for loop break flag
+
 	for(i=0;i<4;i++){       
 		for(j=0;j<4;j++){
 	//position for loop star		
+		
 			if(i==3) ii=0; //lower right
 		 	else ii = i+1;
 			if(j==3) jj=0;
 			else jj = j+1;
-			if(kmap[i][j]!=0 && kmap[i][jj]!=0 && kmap[ii][j]!=0 && kmap[ii][jj]!=0){
-				if(kmap[i][j]==1 || kmap[i][jj]==1 || kmap[ii][j]==1 || kmap[ii][jj]==1 ){
-					flag=0;
-				}
+			if((kmap[i][j]!=0) && (kmap[i][jj]!=0) && (kmap[ii][j]!=0) && (kmap[ii][jj]!=0)){
+					flag = 1;
 			}	 
-			if(flag!=1 && Circle[i][j]==0 && kmap[i][j]!=-1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
+
+			if(flag==1 && (kmap[i][j]==1) && Circle[i][j]==0){  //Each number in this circle != 0 and circle times = 0 	 	
 				for(k=i;count2<2;count2++){
 					for(n=j;count<2;count++){
 						Circle[k][n]++;
 
 						/*get binary of Group and store in char*/
-						for(m=0;m<4;m++){
-							for(nn=0;nn<4;nn++){
-							binary[nn][m]=(((Kmap[k][n] >> 3-m) & 1)+48);
+							for(m=0;m<4;m++){
+							binary[nn][m]=((((Kmap[k][n] >> (3-m)) & 1))+48);
+							printf("%c",binary[nn][m]);
 							}	
-						}
+							printf("\n");
+						
 						/*get binary of Group and store in char*/
 						if(n==3) n=0;
 						else n++;
+						nn++;
 					}
 					count=0;
 					if(k==3) k=0;
 					else k++;
 				}
+				count2 =0;
 				/* Simplify */
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						if(binary[nn][m]-48) num++;
+						if(binary[nn][m]&1) num++;
+						printf("num:%d ",num);
 					}
-					if(num==4){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"+"); }
-					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'+"); }
-
-				num=0;
+					printf("\n");
+					if(num==4){ 
+						s4[strlen(s4)] = m+97;
+						if(m==3) strcat(s4,"+");
+					}
+					if(num==0){ 
+						s4[strlen(s4)] = m+97; 
+						strcat(s4,"'"); 
+						if(m==3) strcat(s4,"+");
+					}
+					num=0;
 				}
 				/* Simplify */
-				count2=0;
-				flag = 1;
-				continue;					
+				flag = -1;
+				continue;
 			}
+			flag=-1;
+			
 			
 			if(i==3) ii=0;  //lower left
 			else ii = i+1;  
 			if(j==0) jj=3;
 			else jj = j-1;
 			if(kmap[i][j]!=0 && kmap[i][jj]!=0 && kmap[ii][j]!=0 && kmap[ii][jj]!=0){
-				if(kmap[i][j]==1 || kmap[i][jj]==1 || kmap[ii][j]==1 || kmap[ii][jj]==1 ){
-					flag=0;
-				}
-			}	 
-			if(flag!=1 && Circle[i][j]==0 && kmap[i][j]!=-1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
+					flag=1;	
+			} 
+			if(flag==0 && Circle[i][j]==0 && kmap[i][j]==1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
 				for(k=i;count2<2;count2++){
-					for(n=j-1;count<2;count++){
+					for(n=jj;count<2;count++){
 						Circle[k][n]++;
 
-						/*get binary of Group and store in char*/
-						for(m=0;m<4;m++){
-							for(nn=0;nn<4;nn++){
-							binary[nn][m]=(((Kmap[k][n] >> 3-m) & 1)+48);	
+						
+							
+							for(m=0;m<4;m++){
+							binary[nn][m]=(((Kmap[k][n] >> (3-m)) & 1)+48);	
 							}
-						}
-						/*get binary of Group and store in char*/
+						
+						//get binary of Group and store in char
 						if(n==3) n=0;
 						else n++;
+						nn++;
 					}
 					count=0;
 					if(k==3) k=0;
 					else k++;
 				}
-				/* Simplify */
+				nn=0;
+				// Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						if(binary[nn][m]-48) num++;
+						num += binary[nn][m]-48;
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"+"); }
+						if(m==3)strcat(s4,"+");}
 					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'+"); }
+						strcat(s4,"'");if(m==3)strcat(s4,"+");}
 
 				num=0;
 				}
-				/* Simplify */
+				// Simplify //
 				count2=0;
 				flag = 1;
 				continue;					
 			}
+			flag=-1;
 
 			if(i==0) ii=3;  //upper left
 			else ii = i-1;  
 			if(j==0) jj=3;
 			else jj = j-1;
 			if(kmap[i][j]!=0 && kmap[i][jj]!=0 && kmap[ii][j]!=0 && kmap[ii][jj]!=0){
-				if(kmap[i][j]==1 || kmap[i][jj]==1 || kmap[ii][j]==1 || kmap[ii][jj]==1 ){
-					flag=0;
-				}
+					flag=1;
 			}	 
-			if(flag!=1 && Circle[i][j]==0 && kmap[i][j]!=-1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
-				for(k=i-1;count2<2;count2++){
-					for(n=j-1;count<2;count++){
+			if(flag==1 && Circle[i][j]==0 && kmap[i][j]==1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
+				for(k=ii;count2<2;count2++){
+					for(n=jj;count<2;count++){
 						Circle[k][n]++;
 
-						/*get binary of Group and store in char*/
-						for(m=0;m<4;m++){
-							for(nn=0;nn<4;nn++){
-							binary[nn][m]=(((Kmap[k][n] >> 3-m) & 1)+48);
+						//get binary of Group and store in char//
+				
+							for(m=0;m<4;m++){
+							binary[nn][m]=(((Kmap[k][n] >> (3-m)) & 1)+48);
 							}
-						}
-						/*get binary of Group and store in char*/
+						
+						//get binary of Group and store in char//
 						if(n==3) n=0;
 						else n++;
+						nn++;
 					}
 					count=0;
 					if(k==3) k=0;
 					else k++;
 				}
-				/* Simplify */
+				nn=0;
+				// Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						if(binary[nn][m]-48) num++;
+						num += binary[nn][m] - 48;
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"+"); }
+						if(m==3)strcat(s4,"+");}
 					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'+"); }
+						strcat(s4,"'");if(m==3)strcat(s4,"+");}
 
-					num=0;
+				num=0;
 				}
-				/* Simplify */
+				// Simplify //
 				count2=0;
 				flag = 1;
 				continue;					
 			}
+			flag=-1;
 
 			if(i==0) ii=3;  //upper right
 			else ii = i-1;  
 			if(j==3) jj=0;
 			else jj = j+1;
 			if(kmap[i][j]!=0 && kmap[i][jj]!=0 && kmap[ii][j]!=0 && kmap[ii][jj]!=0){
-				if(kmap[i][j]==1 || kmap[i][jj]==1 || kmap[ii][j]==1 || kmap[ii][jj]==1 ){
-					flag=0;
-				}
+					flag=1;
 			}	 
-			if(flag!=1 && Circle[i][j]==0 && kmap[i][j]!=-1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
-				for(k=i-1;count2<2;count2++){
+			if(flag==1 && Circle[i][j]==0 && kmap[i][j]==1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
+				for(k=ii;count2<2;count2++){
 					for(n=j;count<2;count++){
 						Circle[k][n]++;
 
-						/*get binary of Group and store in char*/
-						for(m=0;m<4;m++){
-							for(nn=0;nn<4;nn++){
-							binary[nn][m]=(((Kmap[k][n] >> 3-m) & 1)+48);
-							}	
-						}
-						/*get binary of Group and store in char*/
+						//get binary of Group and store in char//
+							for(m=0;m<4;m++){
+							binary[nn][m]=(((Kmap[k][n] >> (3-m)) & 1)+48);
+							}
+						
+						//get binary of Group and store in char//
 						if(n==3) n=0;
 						else n++;
+						nn++;
 					}
 					count=0;
 					if(k==3) k=0;
 					else k++;
 				}
-				/* Simplify */
+				nn=0;
+				//Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						if(binary[nn][m]-48) num++;
+						num += binary[nn][m]-48;
+
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"+"); }
+						if(m==3)strcat(s4,"+");}
 					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'+"); }
+						strcat(s4,"'");if(m==3)strcat(s4,"+");}
 
 				num=0;
 				}
-				/* Simplify */
+				// Simplify //
 				count2=0;
 				flag = 1;
 				continue;					
-			}
-
-
+			} 
+			flag=-1;
 			//position for loop end
 		}
 	}
-	
 }
 
-void Circle2(int kmap[][4],int Circle[][4],int Kmap[][4]){
+void Circle2(){
+return;
 }
-void Circle1(int kmap[][4],int Circle[][4],int Kmap[][4]){
+
+void Circle1(){
+return;
 }
 
 
@@ -820,7 +831,7 @@ void GetGroupTerm(char* input,int len,int term[]){
 	for(j=0;j<16;j++){
 		total = 0;
 		for(k=0;k<4;k++){
-			total +=((c[j][k]-48) << 3-k);
+			total +=((c[j][k]-48) << (3-k));
 		}
 	  term[total] = total; 
 
@@ -835,10 +846,12 @@ void GetGroupTerm(char* input,int len,int term[]){
 	}
 	printf(")\n");
 
+	for(j=0;j<16;j++) term[j]=-1;
+
 	
 	return;
 }
 
-int GetGroup(char* PI,int kamp[][4],int Circle[][4],int Kmap[][4]){
+int GetGroup(char* PI){
 	return 0;
 }
