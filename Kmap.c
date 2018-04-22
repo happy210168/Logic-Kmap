@@ -10,7 +10,7 @@ void Circle2(); //700L
 void Circle1(); //880L
 //find minterm 46~87L   //Initialize Kmap 89~125L   //Circle and Simplify 127~158L
 
-char s8[50],s4[50],s2[50],s1[50];  //store abcd in size n circle  ex: d+b+c  
+char s8[50],s4[50],s2[50],s1[50];  //store abcd in size 1, 2, 4, 8 circle   
 char PI[100];   //F(A,B,C,D) Answer 
 unsigned int Kmap[4][4]; //store in decimal 
 int kmap[4][4];	//store in binary
@@ -19,7 +19,7 @@ static int Groupnum=0;
 
 
 
-int main(){
+int main(int argc,char* argv[]){
 	 
 	/////* File processing */////
 	FILE* inFile,*outFile;
@@ -34,6 +34,7 @@ int main(){
 	/////* File processing */////
 
 	int i,j;   //for loop times
+	int var = atoi(argv[1]);   //input by keboard or file
 	char min[150];  //store input string
 	int minterm[16],dontcare[16],term[16];   //store minterm (decimal) //term[16] for last group 
 	int count=0; //the number of minterm
@@ -41,18 +42,26 @@ int main(){
 		minterm[i] = -1;
 		dontcare[i] = -1;
 		term[i] = -1;
-	} //initialize array
+	} //initialize array to -1
+
 
 	/////* begin find minterm *///// 
 
-/*	while((fscanf(inFile,"%s",min))==1){
-		printf("input : %s\n",min);
-	}  //read input file */
-	scanf("%s",min);
+	//input from file or input by keyboard 
 	
-
+	if(var==1){
+		printf("Input by keyboard:\n");	
+		scanf("%s",min);
+		printf("input:%s\n",min);
+	}
+	if(var==0){
+		while((fscanf(inFile,"%s",min))==1){
+				printf("File input:%s\n",min);
+		}
+	}
+	
 	///*use strtok to cut string*///
-	char t[5] = "+";  //cut string with '+'
+	char t[3] = "+";  //cut string with '+'
 	char *text = strtok(min,t);
 	while(text!=NULL){ 
 	
@@ -87,7 +96,7 @@ int main(){
 	/////* end find minterm */////
 
 	/////* begin initialize Kmap */////
-	printf("Initialize Kmap:\nCD＼AB 00 01 11 10\n     -------------");
+	printf("Initialize Kmap:\n  \\AB 00 01 11 10\n  CD\\-------------");
 
 	int ii,jj;  //for loop count 3 to 4 and 4 to 3
 	for(i=0;i<4;i++){
@@ -111,10 +120,10 @@ int main(){
 	} //initialize (binary)
 
 	for(i=0;i<4;i++){
-		if(i==0) printf("\n   00 |");
-		else if(i==1) printf("   01 |");
-		else if(i==2) printf("   11 |");
-		else  printf("   10 |");
+		if(i==0) printf("\n  00 |");
+		else if(i==1) printf("  01 |");
+		else if(i==2) printf("  11 |");
+		else  printf("  10 |");
 		for(j=0;j<4;j++){
 			if(kmap[i][j]==-1) printf("X  ");
 			else printf("%d  ",kmap[i][j]);
@@ -141,7 +150,8 @@ int main(){
 
 	Circle1();  //Circle for size 1
 	strcat(s8,s1);
-	printf("s8:%s\n,s4:%s\n,s2:%s\n",s8,s4,s2);
+
+//	printf("s8:%s\ns4:%s\ns2:%s\n",s8,s4,s2);
 
 	char *buf = strtok(s8,t);
   while(buf!=NULL){ 	
@@ -158,15 +168,15 @@ int main(){
 
 	/////* end Circle and Simplify *////
 	
-	for(i=0;i<4;i++){
+	/*for(i=0;i<4;i++){
 		for(j=0;j<4;j++){
 			printf("%d ",Circle[i][j]);
 		}
 		printf("\n");
 	}
-
+		print Circle times*/
 	return 0;
-}
+}     
 
 
 ////////main end///////////
