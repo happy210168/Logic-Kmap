@@ -45,9 +45,11 @@ int main(){
 
 	/////* begin find minterm *///// 
 
-	while((fscanf(inFile,"%s",min))==1){
+/*	while((fscanf(inFile,"%s",min))==1){
 		printf("input : %s\n",min);
-	}  //read input file 
+	}  //read input file */
+	scanf("%s",min);
+	
 
 	///*use strtok to cut string*///
 	char t[5] = "+";  //cut string with '+'
@@ -123,11 +125,12 @@ int main(){
 	/////* end initialize Kmap */////
 
 	/////* begin Circle and Simplify */////
-	if(Circle16(kmap,Circle,Kmap)){	//Circle for size 16
-		printf("Group 1:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15\nSimplification:X\nF(A,B,C,D)= X");	
+	if(Circle16()){	//Circle for size 16
+		printf("Group :m(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)\nSimplification -> 1\nF(A,B,C,D)= 1");	
 	}
+	return 0;
 
-	Circle8(kmap,Circle,Kmap);  //Circle for size 8
+	Circle8();  //Circle for size 8
 	///*use strtok to cut string*///
 	char *buf = strtok(s8,t);
 	while(buf!=NULL){ 	
@@ -142,7 +145,7 @@ int main(){
  	
 
 
-	Circle4(kmap,Circle,Kmap);  //Circle for size 4
+	Circle4();  //Circle for size 4
 
 	///*use strtok to cut string*///
 	buf = strtok(s4,t);
@@ -158,7 +161,7 @@ int main(){
 
 
 
-	Circle2(kmap,Circle,Kmap);	//Circle for size 2
+	Circle2();	//Circle for size 2
 	///*use strtok to cut string*///
 	buf = strtok(s2,t);
 	while(buf!=NULL){ 
@@ -172,7 +175,7 @@ int main(){
 	///*use strtok to cut string
 
 
-	Circle1(kmap,Circle,Kmap);  //Circle for size 1
+	Circle1();  //Circle for size 1
 	///*use strtok to cut string*///
 	buf = strtok(s1,t);
 	while(buf!=NULL){ 
@@ -184,11 +187,10 @@ int main(){
 		buf = strtok(NULL,t);
 	}
 	///*use strtok to cut string
-	PI[strlen(PI)-1]=32;
+	if(PI[strlen(PI)-1]==43) PI[strlen(PI)-1]=32;
 	printf("F(A,B,C,D):%s\n",PI);
 
 	/////* end Circle and Simplify *////
-
 
 	return 0;
 }
@@ -555,10 +557,8 @@ void Circle4(){
 				/* Simplify */
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						if(binary[nn][m]&1) num++;
-						printf("num:%d ",num);
+					if(binary[nn][m]-48) num++;
 					}
-					printf("\n");
 					if(num==4){ 
 						s4[strlen(s4)] = m+97;
 						if(m==3) strcat(s4,"+");
@@ -574,18 +574,17 @@ void Circle4(){
 
 				/* Simplify */
 				flag = -1;
-				continue;
 			}
 			flag=-1;
 			
-			if(i==3) ii=0;  //lower left
-			else ii = i+1;  
+			if(i==3) ii=0;					  //lower left
+			else  ii = i+1;
 			if(j==0) jj=3;
 			else jj = j-1;
 			if(kmap[i][j]!=0 && kmap[i][jj]!=0 && kmap[ii][j]!=0 && kmap[ii][jj]!=0){
 					flag=1;	
 			} 
-			if(flag==0 && Circle[i][j]==0 && kmap[i][j]==1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
+			if(flag==1 && Circle[i][j]==0 && kmap[i][j]==1){ //Each number in this circle != 0 and circle times = 0 ,so circle them
 				for(k=i;count2<2;count2++){
 					for(n=jj;count<2;count++){
 						Circle[k][n]++;
@@ -607,7 +606,7 @@ void Circle4(){
 				// Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						num += binary[nn][m]-48;
+					if(binary[nn][m]-48) num++;
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
 						if(m==3)strcat(s4,"+");}
@@ -620,8 +619,7 @@ void Circle4(){
 
 				// Simplify //
 				count2=0;
-				flag = 1;
-				continue;					
+				flag = -1;					
 			}
 			flag=-1;
 
@@ -656,7 +654,7 @@ void Circle4(){
 				// Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						num += binary[nn][m] - 48;
+						if(binary[nn][m]-48) num++;
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
 						if(m==3)strcat(s4,"+");}
@@ -669,8 +667,7 @@ void Circle4(){
 
 				// Simplify //
 				count2=0;
-				flag = 1;
-				continue;					
+				flag = -1;					
 			}
 			flag=-1;
 
@@ -704,8 +701,7 @@ void Circle4(){
 				//Simplify //
 				for(m=0;m<4;m++){
 					for(nn=0;nn<4;nn++){
-						num += binary[nn][m]-48;
-
+						if(binary[nn][m]-48) num++;
 					}
 					if(num==4){ s4[strlen(s4)] = m+97; 
 						if(m==3)strcat(s4,"+");}
@@ -718,8 +714,7 @@ void Circle4(){
 
 				// Simplify //
 				count2=0;
-				flag = 1;
-				continue;					
+				flag = -1;				
 			} 
 			flag=-1;
 			//position for loop end
@@ -764,17 +759,16 @@ void Circle2(){
 						num += binary[nn][m]-48;
 
 					}
-					if(num==2){ s4[strlen(s4)] = m+97; 
-						if(m==3)strcat(s4,"+");}
-					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'");if(m==3)strcat(s4,"+");}
+					if(num==2){ s2[strlen(s2)] = m+97; 
+						if(m==3)strcat(s2,"+");}
+					if(num==0){ s2[strlen(s2)] = m+97; 
+						strcat(s2,"'");if(m==3)strcat(s2,"+");}
 
 				num=0;
 				}
-				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
+				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
 				// Simplify //
-				flag = 1;
-				continue;					
+				flag = -1;					
 			} 
 			flag=-1;
 
@@ -804,16 +798,16 @@ void Circle2(){
 						num += binary[nn][m]-48;
 
 					}
-					if(num==2){ s4[strlen(s4)] = m+97; 
-						if(m==3)strcat(s4,"+");}
-					if(num==0){ s4[strlen(s4)] = m+97; 
-						strcat(s4,"'");if(m==3)strcat(s4,"+");}
+					if(num==2){ s2[strlen(s2)] = m+97; 
+						if(m==3)strcat(s2,"+");}
+					if(num==0){ s2[strlen(s2)] = m+97; 
+						strcat(s2,"'");if(m==3)strcat(s2,"+");}
 
 				num=0;
 				}
-				if(s4[strlen(s4)-1]!=43) strcat(s4,"+");
+				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
 				// Simplify //
-				flag = 1;
+				flag = -1;
 				continue;					
 			} 
 			flag=-1;
@@ -853,7 +847,7 @@ void Circle2(){
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
 				// Simplify //
-				flag = 1;
+				flag = -1;
 				continue;					
 			} 
 			flag=-1;
@@ -893,7 +887,7 @@ void Circle2(){
 				}
 				if(s2[strlen(s2)-1]!=43) strcat(s2,"+");
 				// Simplify //
-				flag = 1;
+				flag = -1;
 				continue;					
 			} 
 			flag=-1;
@@ -1034,10 +1028,9 @@ int GetGroupTerm(char* input,int len,int term[]){
 		}
 		for(m=0;m<4;m++){
 			for(n=0;n<4;n++){
-				if(total==Kmap[m][n]){
-					if(Circle[m][n]==1){
-						Bool = 1;
-					}
+				if(total==Kmap[m][n]&&Circle[m][n]==1){
+						Bool=1;
+					
 				}	
 			}
 		}
