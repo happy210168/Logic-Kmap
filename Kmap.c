@@ -2,12 +2,12 @@
 #include<stdlib.h>
 #include<string.h>
 void Getminterm(char* input,int len,int minterm[],int dontcare[]);  //172L begin
-int  GetGroupTerm(char* input,int len,int term[]); //1006L begin
+int  GetGroupTerm(char* input,int len,int term[]); //1023L begin
 int Circle16(); //258L begin
 void Circle8(); //276L begin
-void Circle4(); //502L begin
-void Circle2(); //795L begin
-void Circle1(); //971L begin
+void Circle4(); //516L begin
+void Circle2(); //811L begin
+void Circle1(); //987L begin
 //Find minterm 46~96L   //Initialize Kmap 98~133L   //Circle and Simplify 135~164L
 
 char s8[50],s4[50],s2[50],s1[50];  //store abcd in size 1, 2, 4, 8 circle   
@@ -139,7 +139,7 @@ int main(int argc,char* argv[]){
 	}	
 
 	Circle8();  //Circle for size 8
-printf("s8 = %s\n",s8);
+	
 	Circle4();  //Circle for size 4
 	strcat(s8,s4);
 
@@ -162,14 +162,6 @@ printf("s8 = %s\n",s8);
 	if(PI[strlen(PI)-1]==43) PI[strlen(PI)-1]=32;
 	printf("F(A,B,C,D):%s\n",PI);
 	/////* end Circle and Simplify *////
-
-	for(i=0;i<4;i++){
-		for(j=0;j<4;j++){
-			printf("%d ",Circle[i][j]);
-		}
-		printf("\n");
-	}
-
 	return 0;
 }     
 
@@ -395,6 +387,7 @@ void Circle8(){
 			count=0;
 		}
 		/* simplify and Circle */
+irintf("s8 = %s\n",s8);
 		else{
 		 	flag=0;
 			flag2=0;
