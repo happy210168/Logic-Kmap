@@ -20,13 +20,9 @@ static int Groupnum=0;
 int main(int argc,char* argv[]){
 	 
 	/////* File processing */////
-	FILE* inFile,*outFile;
+	FILE* inFile;
 	inFile = fopen("input.txt","r");
 	if(!inFile){
-	printf("Failed to open\n");
-	}
-	outFile = fopen("output.txt","w");
-	if(!outFile){
 	printf("Failed to open\n");
 	}
 	/////* File processing */////
@@ -387,7 +383,6 @@ void Circle8(){
 			count=0;
 		}
 		/* simplify and Circle */
-irintf("s8 = %s\n",s8);
 		else{
 		 	flag=0;
 			flag2=0;
@@ -1106,7 +1101,7 @@ int GetGroupTerm(char* input,int len,int term[]){
 		term[total]=total;
 		for(m=0;m<4;m++){
 			for(n=0;n<4;n++){
-				if(term[total]==Kmap[m][n] && (Circle[m][n]==1)){
+				if(term[total]==Kmap[m][n] && (kmap[m][n]==1 && Circle[m][n]==1)){
 					Circle[m][n]++;	
 					Bool=1;
 				}
